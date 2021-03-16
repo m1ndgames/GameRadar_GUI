@@ -1,0 +1,6 @@
+configparser~=5.0.2
+pysimplegui~=4.37.0
+opencv-python~=4.5.1.48
+numpy
+scipy~=1.6.1
+Pillow~=8.1.2

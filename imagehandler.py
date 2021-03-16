@@ -28,7 +28,7 @@ class ImageHandler:
 
                 self.radar.imagedata = self.provide_image_data(marker_img)
 
-                time.sleep(0.05)
+                time.sleep(int(self.radar.config['radar']['updatecycle']) / 1000)
 
     def provide_image_data(self, imgarray):
         """Generate image data using PIL

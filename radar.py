@@ -58,7 +58,7 @@ class Radar:
 
         # Run GUI
         while True:
-            event, values = window.read(timeout=500)
+            event, values = window.read(timeout=int(self.config['radar']['updatecycle']))
             if event == Gui.WIN_CLOSED:
                 break
 

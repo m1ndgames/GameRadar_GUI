@@ -49,7 +49,8 @@ class Radar:
 
         # Create the layout
         layout = [
-            [Gui.Image(data=self.imagedata, key='map')]
+            [Gui.Image(data=self.imagedata, key='map')],
+            [Gui.ReadFormButton(button_text='', tooltip='Exit', button_color=Gui.TRANSPARENT_BUTTON, image_filename='images/quit.png', image_size=(50, 50), image_subsample=2, border_width=0, key='exit_button')]
         ]
 
         # Create the window
@@ -59,7 +60,7 @@ class Radar:
         # Run GUI
         while True:
             event, values = window.read(timeout=int(self.config['radar']['updatecycle']))
-            if event == Gui.WIN_CLOSED:
+            if event == Gui.WIN_CLOSED or event == 'exit_button':
                 break
 
             window.Element('map').Update(data=self.imagedata)

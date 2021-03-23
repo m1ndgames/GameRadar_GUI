@@ -8,6 +8,7 @@ class RadarServer:
         self.radar.map = None
         self.radar.mapfile = None
         self.radar.objects = []
+        self.radar.received_update = False
 
     def unpack_json(self, json_data):
         self.radar.objects = []
@@ -15,6 +16,7 @@ class RadarServer:
 
         self.radar.game = data['game']
         self.radar.map = data['map']
+        self.radar.map_size = data['map_size']
 
         for o in data['objects']:
             self.radar.objects.append(o)
@@ -29,10 +31,13 @@ class RadarServer:
             # Bind to address and ip
             UDPServerSocket.bind((self.radar.config['server']['ip'], int(self.radar.config['server']['port'])))
 
-            print("Server up and listening")
+            print("RadarGui v" + self.radar.version + " - https://github.com/m1ndgames/GameRadar_GUI")
+            print("Server up and listening for connection at " + self.radar.config['server']['ip'] + ":" + self.radar.config['server']['port'] + ' (UDP)')
 
             # Listen for incoming datagrams
             while True:
                 bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
                 message = bytesAddressPair[0]
+                print(str(message))
                 self.unpack_json(message)
+                self.radar.received_update = True

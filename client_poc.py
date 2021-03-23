@@ -6,6 +6,9 @@ import random
 
 class RadarClient:
     def __init__(self):
+        self.game = None
+        self.map = None
+        self.mapsize = None
         self.player_position = None
         self.friend_position = None
         self.enemy_1_position = None
@@ -13,13 +16,12 @@ class RadarClient:
         self.extract_position = None
         self.target_position = None
         self.supply_position = None
-        self.game = 'huntshowdown'
-        self.map = 'Bayou'
 
     def pack_json(self):
         data = {
             'game': self.game,
             'map': self.map,
+            'map_size': self.mapsize,
             'objects': [
                 {
                     'type': 'self',
@@ -48,8 +50,23 @@ class RadarClient:
                 },
                 {
                     'type': 'extract',
-                    'x': self.extract_position['x'],
-                    'y': self.extract_position['y'],
+                    'x': 0,
+                    'y': int(self.mapsize[1] / 2),
+                },
+                {
+                    'type': 'extract',
+                    'x': self.mapsize[0],
+                    'y': int(self.mapsize[1] / 2),
+                },
+                {
+                    'type': 'extract',
+                    'x': int(self.mapsize[0] / 2),
+                    'y': 0,
+                },
+                {
+                    'type': 'extract',
+                    'x': int(self.mapsize[0] / 2),
+                    'y': self.mapsize[1],
                 },
                 {
                     'type': 'target',
@@ -58,8 +75,8 @@ class RadarClient:
                 },
                 {
                     'type': 'supply',
-                    'x': self.target_position['x'],
-                    'y': self.target_position['y'],
+                    'x': self.supply_position['x'],
+                    'y': self.supply_position['y'],
                 }
             ]
         }
@@ -68,26 +85,35 @@ class RadarClient:
         return json_data_string
 
     def run(self):
-        while True:
-            self.player_position = {'x': random.randrange(100), 'y': random.randrange(100), 'rotation': random.randrange(360)}
-            self.friend_position = {'x': random.randrange(100), 'y': random.randrange(100), 'rotation': random.randrange(360)}
-            self.enemy_1_position = {'x': random.randrange(100), 'y': random.randrange(100), 'rotation': random.randrange(360)}
-            self.enemy_2_position = {'x': random.randrange(100), 'y': random.randrange(100), 'rotation': random.randrange(360)}
-            self.extract_position = {'x': random.randrange(100), 'y': random.randrange(100), 'rotation': random.randrange(360)}
-            self.target_position = {'x': random.randrange(100), 'y': random.randrange(100), 'rotation': random.randrange(360)}
-            self.supply_position = {'x': random.randrange(100), 'y': random.randrange(100), 'rotation': random.randrange(360)}
+        # Specify the game
+        self.game = 'huntshowdown'
 
-            bytesToSend         = str.encode(self.pack_json())
-            serverAddressPort   = ("127.0.0.1", 1337)
-            bufferSize          = 1024
+        # Map name
+        self.map = 'Bayou'
+
+        # The maps size
+        self.mapsize = (3000, 3000)
+
+        # Place some random markers on the map
+        while True:
+            self.player_position = {'x': random.randrange(self.mapsize[0]), 'y': random.randrange(self.mapsize[1]), 'rotation': random.randrange(360)}
+            self.friend_position = {'x': random.randrange(self.mapsize[0]), 'y': random.randrange(self.mapsize[1]), 'rotation': random.randrange(360)}
+            self.enemy_1_position = {'x': random.randrange(self.mapsize[0]), 'y': random.randrange(self.mapsize[1]), 'rotation': random.randrange(360)}
+            self.enemy_2_position = {'x': random.randrange(self.mapsize[0]), 'y': random.randrange(self.mapsize[1]), 'rotation': random.randrange(360)}
+            self.target_position = {'x': random.randrange(self.mapsize[0]), 'y': random.randrange(self.mapsize[1])}
+            self.supply_position = {'x': random.randrange(self.mapsize[0]), 'y': random.randrange(self.mapsize[1])}
+
+            databytes = str.encode(self.pack_json())
+            server = ("127.0.0.1", 1337)
 
             # Create a UDP socket at client side
             UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
             # Send to server using created UDP socket
-            UDPClientSocket.sendto(bytesToSend, serverAddressPort)
+            UDPClientSocket.sendto(databytes, server)
 
-            time.sleep(0.01)
+            time.sleep(0.25)
+
 
 if __name__ == '__main__':
     radar = RadarClient()

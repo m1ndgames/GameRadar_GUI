@@ -1,6 +1,15 @@
 # GameRadar_GUI
 The GUI part of the GameRadar Framework
 
+# Screenshots
+No client connected:
+
+![No Connection](images/Screenshots/no_connection.png?raw=true)
+
+Radar Gui:
+
+![No Connection](images/Screenshots/radar_gui.png?raw=true)
+
 # Setup
 Python 3.7
 ``pip install -r requirements.txt``
